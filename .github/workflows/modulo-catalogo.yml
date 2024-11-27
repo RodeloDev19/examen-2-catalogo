@@ -1,0 +1,51 @@
+name: CI/CD Modulo Catalogo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Configure AWS credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        run: |
+          echo "Configuring AWS credentials..."
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id=${AWS_ACCESS_KEY_ID}" >> ~/.aws/credentials
+          echo "aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" >> ~/.aws/credentials
+          echo "aws_session_token=${AWS_SESSION_TOKEN}" >> ~/.aws/credentials
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and push Docker image
+        env:
+          ECR_URI_CATALOGO: ${{ secrets.ECR_URI_CATALOGO }}
+        run: |
+          echo "Building Docker image for modulo-catalogo"
+
+          # Build Docker image
+          docker build -t modulo-catalogo .
+
+          # Log in to AWS ECR
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_URI_CATALOGO
+
+          # Tag and push Docker image
+          docker tag modulo-catalogo:latest $ECR_URI_CATALOGO:modulo-catalogo
+          docker push $ECR_URI_CATALOGO:modulo-catalogo
