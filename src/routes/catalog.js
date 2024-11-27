@@ -9,7 +9,7 @@ router.get('/clientes/:id', catalogController.obtenerCliente); // Obtener client
 router.put('/clientes/:id', catalogController.actualizarCliente); // Actualizar cliente
 router.delete('/clientes/:id', catalogController.eliminarCliente); // Eliminar cliente
 
-router.get('/cliente/:id/enviar', clienteController.obtenerYEnviarCliente);
+router.get('/cliente/:id/enviar', catalogController.obtenerYEnviarCliente);
 
 // Rutas CRUD de Domicilios
 router.post('/domicilios', catalogController.crearDomicilio); // Crear domicilio
