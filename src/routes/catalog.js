@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const catalogController = require('../controllers/catalogController');
 
-router.get('/clients', catalogController.getClients);
-
 // Rutas CRUD de Clientes
 router.post('/clientes', catalogController.crearCliente); // Crear cliente
 router.get('/clientes', catalogController.obtenerClientes); // Obtener todos los clientes
