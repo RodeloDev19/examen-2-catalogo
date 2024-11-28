@@ -16,7 +16,7 @@ exports.obtenerYEnviarCliente = async (req, res) => {
         const cliente = results[0]; // Datos del cliente
 
         // Realizar un POST request al siguiente contenedor (puerto 4001)
-        const apiUrl = 'http://localhost:4001/api/notes/create';
+        const apiUrl = 'http://modulo-notas:4001/api/notes/create';
         const postData = {
             cliente: cliente.ID,
             razonSocial: cliente.Razon_Social,
